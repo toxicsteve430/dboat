@@ -6,64 +6,61 @@
     <title>D-BOAT | Builder Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #f4f7f9; color: #333; font-family: sans-serif; }
-        .sidebar { background-color: #ffffff; border-right: 1px solid #e5e7eb; width: 60px; }
-        .header { background-color: #ffffff; border-bottom: 1px solid #e5e7eb; }
-        .block-blue { background-color: #102060; color: white; border-radius: 4px; }
-        .param-row { background-color: #eef2f7; border-radius: 4px; margin-bottom: 4px; padding: 6px 12px; }
-        .btn-blue { background-color: #102060; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold; }
+        body { background-color: #f2f3f5; color: #333; font-family: 'Segoe UI', sans-serif; }
+        .sidebar { background: #ffffff; border-right: 1px solid #d6dadc; width: 48px; }
+        .header { background: #ffffff; border-bottom: 1px solid #d6dadc; height: 48px; }
+        .block-header { background: #102060; color: white; border-radius: 4px 4px 0 0; padding: 6px 10px; font-size: 11px; font-weight: bold; }
+        .block-body { background: white; border: 1px solid #d6dadc; border-top: none; padding: 10px; border-radius: 0 0 4px 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .param-row { background: #eef1f5; margin-bottom: 4px; padding: 4px 8px; border-radius: 3px; font-size: 11px; display: flex; justify-content: space-between; }
+        .btn-run { background: #2e8836; color: white; border-radius: 4px; padding: 6px 20px; font-weight: bold; font-size: 13px; }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden">
 
     <div class="sidebar flex flex-col items-center py-4 gap-6 text-zinc-400">
-        <div class="p-2 hover:bg-zinc-100 rounded cursor-pointer">🔄</div>
-        <div class="p-2 hover:bg-zinc-100 rounded cursor-pointer">📁</div>
-        <div class="p-2 hover:bg-zinc-100 rounded cursor-pointer">💾</div>
-        <div class="p-2 hover:bg-zinc-100 rounded cursor-pointer text-red-500">📊</div>
-        <div class="mt-auto p-2">🔍</div>
+        <div class="cursor-pointer hover:text-blue-600">📁</div>
+        <div class="cursor-pointer hover:text-blue-600">🧩</div>
+        <div class="cursor-pointer hover:text-blue-600">💾</div>
+        <div class="mt-auto cursor-pointer pb-4">⚙️</div>
     </div>
 
     <div class="flex-1 flex flex-col">
-        <div class="header p-3 flex justify-between items-center px-6">
-            <div class="flex gap-4 items-center">
-                <span class="text-zinc-400">☰</span>
-                <span class="text-blue-600 font-bold">D-BOAT</span>
+        <div class="header flex justify-between items-center px-4 shadow-sm">
+            <div class="flex items-center gap-3">
+                <span class="text-blue-700 font-black tracking-tighter">D-BOAT</span>
+                <span class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Bot Builder</span>
             </div>
-            <div class="flex gap-4 items-center">
-                <div class="bg-zinc-100 px-4 py-1 rounded text-sm font-bold border flex items-center gap-2">
-                    <img src="https://deriv.com/static/86ad49d95f850d55e9e03512b9380922/deriv-logo.svg" width="20">
-                    40,575.59 <span class="text-blue-600">USD</span>
+            <div class="flex gap-2 items-center">
+                <div class="bg-zinc-100 border px-3 py-1 rounded text-xs font-bold">
+                    Balance: <span class="text-green-600">10,000.00 USD</span>
                 </div>
+                <button class="btn-run active:scale-95 transition-all">▶ RUN</button>
             </div>
         </div>
 
-        <div class="flex-1 p-4 overflow-y-auto">
-            <button class="btn-blue mb-4">Quick strategy</button>
-
-            <div class="max-w-md">
-                <div class="block-blue p-2 text-xs flex items-center gap-2">
-                    📄 1. Trade parameters
+        <div class="flex-1 p-6 overflow-auto relative">
+            <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" style="background-image: radial-gradient(#000 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
+            
+            <div class="max-w-sm mb-6 relative z-10">
+                <div class="block-header flex items-center gap-2">
+                    <span class="bg-blue-500 rounded-sm px-1">1</span> Trade parameters
                 </div>
-                <div class="bg-white border p-3 border-t-0 rounded-b shadow-sm space-y-1">
-                    <div class="param-row flex justify-between text-[11px] items-center">
-                        <span>Market:</span>
-                        <span class="font-bold">Derived > Continuous > Volatility 100</span>
-                    </div>
-                    <div class="param-row flex justify-between text-[11px] items-center">
-                        <span>Trade Type:</span>
-                        <span class="font-bold">Digits > Over/Under</span>
-                    </div>
-                    <div class="param-row flex justify-between text-[11px] items-center">
-                        <span>Contract Type:</span>
-                        <span class="font-bold">Both</span>
-                    </div>
+                <div class="block-body">
+                    <div class="param-row"><span>Market:</span> <span class="font-bold">Volatility 100 Index</span></div>
+                    <div class="param-row"><span>Trade Type:</span> <span class="font-bold">Rise/Fall</span></div>
+                    <div class="param-row"><span>Contract:</span> <span class="font-bold">Both</span></div>
+                    <div class="param-row"><span>Stake:</span> <span class="font-bold">10 USD</span></div>
                 </div>
+            </div>
 
-                <div class="mt-4 block-blue p-2 text-xs">📈 Live Feed</div>
-                <div class="bg-white border p-4 text-center rounded-b">
-                    <div id="price" class="text-4xl font-mono font-bold">0.00</div>
-                    <p class="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest">Volatility 100</p>
+            <div class="max-w-sm relative z-10">
+                <div class="block-header flex justify-between items-center bg-zinc-800">
+                    <span>📈 Market Analysis</span>
+                    <span id="dot" class="h-2 w-2 rounded-full bg-red-500"></span>
+                </div>
+                <div class="block-body text-center py-8">
+                    <div id="price" class="text-4xl font-mono font-bold tracking-tighter">0.0000</div>
+                    <p class="text-[9px] text-zinc-400 mt-2 uppercase font-bold tracking-[0.2em]">Real-time Feed</p>
                 </div>
             </div>
         </div>
@@ -71,13 +68,22 @@
 
     <script>
         const priceEl = document.getElementById('price');
+        const dotEl = document.getElementById('dot');
+        let lastPrice = 0;
         const ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=1089');
-        ws.onopen = () => ws.send(JSON.stringify({ "ticks": "R_100" }));
+
+        ws.onopen = () => {
+            dotEl.className = "h-2 w-2 rounded-full bg-green-500 animate-pulse";
+            ws.send(JSON.stringify({ "ticks": "R_100" }));
+        };
+
         ws.onmessage = (msg) => {
             const data = JSON.parse(msg.data);
             if (data.tick) {
-                priceEl.innerText = data.tick.quote;
-                priceEl.style.color = data.tick.quote > priceEl.innerText ? '#4bb4b3' : '#ff444f';
+                const current = data.tick.quote;
+                priceEl.innerText = current;
+                priceEl.style.color = current > lastPrice ? "#2e8836" : "#ff444f";
+                lastPrice = current;
             }
         };
     </script>
