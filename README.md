@@ -3,91 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D-BOAT ULTIMATE</title>
+    <title>D-BOAT | Builder Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .up { color: #00ff88; }
-        .down { color: #ff4444; }
-        .bg-glass { background: rgba(20, 20, 25, 0.8); backdrop-filter: blur(10px); }
+        body { background-color: #f4f7f9; color: #333; font-family: sans-serif; }
+        .sidebar { background-color: #ffffff; border-right: 1px solid #e5e7eb; width: 60px; }
+        .header { background-color: #ffffff; border-bottom: 1px solid #e5e7eb; }
+        .block-blue { background-color: #102060; color: white; border-radius: 4px; }
+        .param-row { background-color: #eef2f7; border-radius: 4px; margin-bottom: 4px; padding: 6px 12px; }
+        .btn-blue { background-color: #102060; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold; }
     </style>
 </head>
-<body class="bg-[#050505] text-zinc-100 min-h-screen flex flex-col p-4 font-sans">
-    
-    <div class="flex justify-between items-center mb-6 px-2">
-        <div class="flex items-center gap-2">
-            <div id="dot" class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></div>
-            <span id="status-text" class="text-[10px] font-bold tracking-widest uppercase text-zinc-500">Connecting</span>
-        </div>
-        <h1 class="text-lg font-black italic tracking-tighter text-blue-500">D-BOAT <span class="text-white">ULTIMATE</span></h1>
+<body class="flex h-screen overflow-hidden">
+
+    <div class="sidebar flex flex-col items-center py-4 gap-6 text-zinc-400">
+        <div class="p-2 hover:bg-zinc-100 rounded cursor-pointer">🔄</div>
+        <div class="p-2 hover:bg-zinc-100 rounded cursor-pointer">📁</div>
+        <div class="p-2 hover:bg-zinc-100 rounded cursor-pointer">💾</div>
+        <div class="p-2 hover:bg-zinc-100 rounded cursor-pointer text-red-500">📊</div>
+        <div class="mt-auto p-2">🔍</div>
     </div>
 
-    <div class="bg-glass border border-white/5 rounded-[40px] p-10 text-center mb-4">
-        <p class="text-[10px] text-zinc-600 uppercase tracking-[0.3em] mb-2 font-bold">Volatility 100 Index</p>
-        <div id="price" class="text-6xl font-mono font-bold tracking-tighter mb-1">0.00</div>
-        <div id="digit" class="text-xs font-bold text-zinc-700 underline decoration-blue-500">Digit: -</div>
-    </div>
-
-    <div class="flex-1 overflow-hidden px-2">
-        <p class="text-[10px] font-bold text-zinc-700 uppercase mb-3 tracking-widest">Live Tick Log</p>
-        <div id="history" class="space-y-3 font-mono text-sm">
+    <div class="flex-1 flex flex-col">
+        <div class="header p-3 flex justify-between items-center px-6">
+            <div class="flex gap-4 items-center">
+                <span class="text-zinc-400">☰</span>
+                <span class="text-blue-600 font-bold">D-BOAT</span>
             </div>
-    </div>
+            <div class="flex gap-4 items-center">
+                <div class="bg-zinc-100 px-4 py-1 rounded text-sm font-bold border flex items-center gap-2">
+                    <img src="https://deriv.com/static/86ad49d95f850d55e9e03512b9380922/deriv-logo.svg" width="20">
+                    40,575.59 <span class="text-blue-600">USD</span>
+                </div>
+            </div>
+        </div>
 
-    <div class="grid grid-cols-2 gap-4 pt-4 pb-6">
-        <button class="bg-[#00c087] py-6 rounded-3xl font-black text-xl shadow-lg shadow-emerald-900/20 active:scale-95 transition-all">RISE</button>
-        <button class="bg-[#f84960] py-6 rounded-3xl font-black text-xl shadow-lg shadow-rose-900/20 active:scale-95 transition-all">FALL</button>
+        <div class="flex-1 p-4 overflow-y-auto">
+            <button class="btn-blue mb-4">Quick strategy</button>
+
+            <div class="max-w-md">
+                <div class="block-blue p-2 text-xs flex items-center gap-2">
+                    📄 1. Trade parameters
+                </div>
+                <div class="bg-white border p-3 border-t-0 rounded-b shadow-sm space-y-1">
+                    <div class="param-row flex justify-between text-[11px] items-center">
+                        <span>Market:</span>
+                        <span class="font-bold">Derived > Continuous > Volatility 100</span>
+                    </div>
+                    <div class="param-row flex justify-between text-[11px] items-center">
+                        <span>Trade Type:</span>
+                        <span class="font-bold">Digits > Over/Under</span>
+                    </div>
+                    <div class="param-row flex justify-between text-[11px] items-center">
+                        <span>Contract Type:</span>
+                        <span class="font-bold">Both</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 block-blue p-2 text-xs">📈 Live Feed</div>
+                <div class="bg-white border p-4 text-center rounded-b">
+                    <div id="price" class="text-4xl font-mono font-bold">0.00</div>
+                    <p class="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest">Volatility 100</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        let ws;
-        let lastPrice = 0;
         const priceEl = document.getElementById('price');
-        const dotEl = document.getElementById('dot');
-        const statusText = document.getElementById('status-text');
-        const historyEl = document.getElementById('history');
-        const digitEl = document.getElementById('digit');
-
-        function connect() {
-            // Using App ID 1089 (Standard Deriv Testing ID)
-            ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=1089');
-
-            ws.onopen = () => {
-                dotEl.className = "h-2 w-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]";
-                statusText.innerText = "Live Connection";
-                ws.send(JSON.stringify({ ticks: "R_100" }));
-            };
-
-            ws.onmessage = (msg) => {
-                const data = JSON.parse(msg.data);
-                if (data.tick) {
-                    const quote = data.tick.quote;
-                    const digit = quote.toString().split('').pop();
-                    
-                    // Update Main Price
-                    priceEl.innerText = quote;
-                    digitEl.innerText = `LAST DIGIT: ${digit}`;
-                    priceEl.className = quote > lastPrice ? "text-6xl font-mono font-bold tracking-tighter up" : "text-6xl font-mono font-bold tracking-tighter down";
-
-                    // Update History Log
-                    const log = document.createElement('div');
-                    log.className = "flex justify-between items-center opacity-80 border-b border-white/5 pb-1";
-                    log.innerHTML = `<span class="text-zinc-600">${new Date().toLocaleTimeString().split(' ')[0]}</span>
-                                    <span class="font-bold ${quote > lastPrice ? 'text-emerald-500' : 'text-rose-500'}">${quote > lastPrice ? '▲' : '▼'} ${quote}</span>`;
-                    historyEl.prepend(log);
-                    if (historyEl.children.length > 6) historyEl.lastChild.remove();
-
-                    lastPrice = quote;
-                }
-            };
-
-            ws.onclose = () => {
-                dotEl.className = "h-2 w-2 rounded-full bg-red-500 animate-pulse";
-                statusText.innerText = "Reconnecting...";
-                setTimeout(connect, 2000); // Auto-retry after 2 seconds
-            };
-        }
-
-        connect();
+        const ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=1089');
+        ws.onopen = () => ws.send(JSON.stringify({ "ticks": "R_100" }));
+        ws.onmessage = (msg) => {
+            const data = JSON.parse(msg.data);
+            if (data.tick) {
+                priceEl.innerText = data.tick.quote;
+                priceEl.style.color = data.tick.quote > priceEl.innerText ? '#4bb4b3' : '#ff444f';
+            }
+        };
     </script>
 </body>
 </html>
