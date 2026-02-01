@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D-BOAT LIVE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .up { color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.5); }
+        .down { color: #ff4444; text-shadow: 0 0 10px rgba(255,68,68,0.5); }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col p-6 font-sans">
+    <div class="flex justify-between items-center mb-10">
+        <h1 class="text-2xl font-black tracking-tighter italic">D-BOAT</h1>
+        <div id="status" class="text-[10px] font-bold py-1 px-3 rounded-full bg-zinc-900 text-yellow-500">CONNECTING...</div>
+    </div>
+
+    <div class="bg-zinc-900/50 border border-white/10 rounded-[40px] p-10 text-center mb-6 shadow-2xl">
+        <p class="text-xs text-zinc-500 uppercase tracking-widest mb-2">Volatility 100 Index</p>
+        <div id="price" class="text-6xl font-mono font-bold tracking-tighter transition-all duration-200">0.00</div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 mt-auto mb-10">
+        <button class="bg-emerald-600 h-20 rounded-2xl font-black text-xl active:scale-95 transition-all">RISE</button>
+        <button class="bg-rose-600 h-20 rounded-2xl font-black text-xl active:scale-95 transition-all">FALL</button>
+    </div>
+
+    <script>
+        const priceEl = document.getElementById('price');
+        const statusEl = document.getElementById('status');
+        let lastPrice = 0;
+        const ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=1089');
+
+        ws.onopen = () => {
+            statusEl.innerText = "● LIVE";
+            statusEl.className = "text-[10px] font-bold py-1 px-3 rounded-full bg-emerald-900/30 text-emerald-400";
+            ws.send(JSON.stringify({ "ticks": "R_100" }));
+        };
+
+        ws.onmessage = (msg) => {
+            const data = JSON.parse(msg.data);
+            if (data.tick) {
+                const quote = data.tick.quote;
+                priceEl.innerText = quote;
+                priceEl.className = quote > lastPrice ? "text-6xl font-mono font-bold tracking-tighter up" : "text-6xl font-mono font-bold tracking-tighter down";
+                lastPrice = quote;
+            }
+        };
+    </script>
+</body>
+</html>
